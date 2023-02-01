@@ -9,7 +9,7 @@ function drawerToggle() {
 </script>
 
 <template>
-  <q-layout view="lHh lpr fFf">
+  <q-layout view="hHh lpr fFf">
 
     <q-header elevated>
       <q-toolbar>
