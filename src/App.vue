@@ -6,7 +6,7 @@
         <q-btn dense flat round icon="menu" @click="drawer.toggle" />
         <q-toolbar-title>Milwaukee Vibe Tool</q-toolbar-title>
         <Connection class="q-mx-md" />
-        <q-btn dense flat round icon="settings" />
+        <q-btn dense flat round icon="settings" to="/settings" />
       </q-toolbar>
     </q-header>
 
