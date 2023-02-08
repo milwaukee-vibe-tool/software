@@ -11,7 +11,11 @@
   "dependencies": {
     "@quasar/extras": "^1.15.10",
     "chart.js": "^4.2.0",
+    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-vue": "^9.9.0",
     "pinia": "^2.0.30",
+    "prettier": "^2.8.4",
     "quasar": "^2.11.5",
     "vue": "^3.2.45",
     "vue-chartjs": "^5.2.0",

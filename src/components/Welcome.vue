@@ -1,6 +1,3 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
-<template>
-  Hello world, and welcome.
-</template>
+<template>Hello world, and welcome.</template>
