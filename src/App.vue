@@ -1,30 +1,16 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-
-const drawerOpen = ref(false)
-
-function drawerToggle() {
-  drawerOpen.value = !drawerOpen.value
-}
-</script>
-
 <template>
   <q-layout view="hHh lpr fFf">
 
     <q-header elevated>
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="drawerToggle" />
-
-        <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
-          </q-avatar>
-          Title
-        </q-toolbar-title>
+        <q-btn dense flat round icon="menu" @click="drawer.toggle" />
+        <q-toolbar-title>Milwaukee Vibe Tool</q-toolbar-title>
+        <Connection class="q-mx-md" />
+        <q-btn dense flat round icon="settings" />
       </q-toolbar>
     </q-header>
 
-    <q-drawer show-if-above v-model="drawerOpen" side="left" bordered>
+    <q-drawer show-if-above v-model="drawer.open" side="left" bordered>
       <!-- drawer content -->
     </q-drawer>
 
@@ -34,3 +20,9 @@ function drawerToggle() {
 
   </q-layout>
 </template>
+
+<script setup lang="ts">
+import Connection from './components/Connection.vue';
+import { useDrawerStore } from './stores/drawer';
+const drawer = useDrawerStore()
+</script>
