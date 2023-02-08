@@ -21,8 +21,17 @@
   </q-layout>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import Connection from './components/Connection.vue';
 import { useDrawerStore } from './stores/drawer';
-const drawer = useDrawerStore()
+
+export default {
+  setup() {
+    const drawer = useDrawerStore()
+    return { drawer }
+  },
+  components: {
+    Connection,
+  }
+}
 </script>
