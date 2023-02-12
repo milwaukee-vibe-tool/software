@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { SerialMock } from "../drivers/serial/mock";
+import SerialDriver from "../drivers/serial/serial";
 import {
   Request,
   RequestPayload,
@@ -13,16 +15,40 @@ export enum ConnectionStatus {
   Connected,
   Disconnected,
   Connecting,
+  Disconnecting,
 }
 
 export const useConnectionStore = defineStore("connection", () => {
+  const driver: SerialDriver = new SerialMock();
+
   const status = ref(ConnectionStatus.Disconnected);
-  function connect() {
-    // temp
+
+  async function connect() {
+    if (status.value != ConnectionStatus.Disconnected) return;
+
     status.value = ConnectionStatus.Connecting;
-    setTimeout(() => {
+
+    try {
+      await driver.connect();
+      status.value = ConnectionStatus.Connected;
+    } catch (error) {
       status.value = ConnectionStatus.Disconnected;
-    }, 3000);
+      throw error;
+    }
+  }
+
+  async function disconnect() {
+    if (status.value != ConnectionStatus.Connected) return;
+
+    status.value = ConnectionStatus.Disconnecting;
+
+    try {
+      await driver.disconnect();
+      status.value = ConnectionStatus.Disconnected;
+    } catch (error) {
+      status.value = ConnectionStatus.Connected;
+      throw error;
+    }
   }
 
   async function send(payload: RequestPayload): Promise<ResponsePayload> {
@@ -34,7 +60,7 @@ export const useConnectionStore = defineStore("connection", () => {
 
   async function write(request: Request) {
     const requestBytes = Request.encode(request).finish();
-    // todo: send to tx
+    // todo: send to tx using protocol?
   }
 
   async function receive(requestId: number): Promise<Response> {
@@ -47,5 +73,10 @@ export const useConnectionStore = defineStore("connection", () => {
     return requestId[0]++;
   }
 
-  return { status, connect, send };
+  return {
+    status,
+    connect,
+    disconnect,
+    send,
+  };
 });

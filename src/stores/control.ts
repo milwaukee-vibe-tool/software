@@ -33,12 +33,12 @@ export const useControlStore = defineStore("control", () => {
     return connectionStore.send({ formatSd });
     // todo: remove all files
   }
-  async function getLog(getLog: GetLog): Promise<LogInfo> {
-    return (await connectionStore.send({ getLog })).logInfo!;
+  async function getLog(getLog: GetLog) {
+    return (await connectionStore.send({ getLog })).logInfo;
     // todo: add to logInfo
   }
-  async function listLogs(listLogs: ListLogs): Promise<LogList> {
-    return (await connectionStore.send({ listLogs })).logList!;
+  async function listLogs(listLogs: ListLogs) {
+    return (await connectionStore.send({ listLogs })).logList;
     // todo: add to log list
   }
   async function newLog(newLog: NewLog) {
