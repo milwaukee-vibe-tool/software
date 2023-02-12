@@ -7,37 +7,44 @@ import { ListLogs } from "../protobuf/build/typescript/protos/requests/listLogs"
 import { NewLog } from "../protobuf/build/typescript/protos/requests/newLog";
 import { LogList } from "../protobuf/build/typescript/protos/responses/logList";
 import { LogInfo } from "../protobuf/build/typescript/protos/responses/logInfo";
+import { ref } from "vue";
+
+export interface LogListEntry {
+  name: string;
+}
+
+export interface LogInfoEntry {
+  logId: string;
+  sampleRate: number;
+  points: [number, number][];
+}
 
 export const useControlStore = defineStore("control", () => {
   const connectionStore = useConnectionStore();
 
-  // todo: implement caching if you feel like it
+  const logList = ref<LogListEntry[]>([]);
+  const logInfo = ref(new Map<string, LogInfoEntry>());
 
   async function deleteLog(deleteLog: DeleteLog) {
     return connectionStore.send({ deleteLog });
+    // todo: remove log
   }
   async function formatSd(formatSd: FormatSd) {
     return connectionStore.send({ formatSd });
+    // todo: remove all files
   }
   async function getLog(getLog: GetLog): Promise<LogInfo> {
-    return checkDefined((await connectionStore.send({ getLog })).logInfo);
+    return (await connectionStore.send({ getLog })).logInfo!;
+    // todo: add to logInfo
   }
   async function listLogs(listLogs: ListLogs): Promise<LogList> {
-    return checkDefined((await connectionStore.send({ listLogs })).logList);
+    return (await connectionStore.send({ listLogs })).logList!;
+    // todo: add to log list
   }
   async function newLog(newLog: NewLog) {
     return connectionStore.send({ newLog });
+    // todo: add to log list
   }
 
-  function checkDefined<Type>(payload?: Type): Type {
-    // todo: is this crappy code? it feels like crappy code
-    return (
-      payload! ??
-      (() => {
-        throw new Error("Response type is incorrect.");
-      })
-    );
-  }
-
-  return { deleteLog, formatSd, getLog, listLogs, newLog };
+  return { logList, logInfo, deleteLog, formatSd, getLog, listLogs, newLog };
 });
