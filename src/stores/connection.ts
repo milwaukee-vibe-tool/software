@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { RequestPayload } from "../protobuf/build/typescript/protos/request";
+import { ResponsePayload } from "../protobuf/build/typescript/protos/response";
 
 export enum ConnectionStatus {
   Connected,
@@ -16,5 +18,11 @@ export const useConnectionStore = defineStore("connection", () => {
       status.value = ConnectionStatus.Disconnected;
     }, 3000);
   }
-  return { status, connect };
+
+  async function send(payload: RequestPayload): Promise<ResponsePayload> {
+    // todo
+    return {};
+  }
+
+  return { status, connect, send };
 });
