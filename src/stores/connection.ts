@@ -1,7 +1,13 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { RequestPayload } from "../protobuf/build/typescript/protos/request";
-import { ResponsePayload } from "../protobuf/build/typescript/protos/response";
+import {
+  Request,
+  RequestPayload,
+} from "../protobuf/build/typescript/protos/request";
+import {
+  Response,
+  ResponsePayload,
+} from "../protobuf/build/typescript/protos/response";
 
 export enum ConnectionStatus {
   Connected,
@@ -20,8 +26,25 @@ export const useConnectionStore = defineStore("connection", () => {
   }
 
   async function send(payload: RequestPayload): Promise<ResponsePayload> {
-    // todo
-    return {};
+    const requestId = generateRequestId();
+    await write({ requestId, payload });
+    const response = await receive(requestId);
+    return response.payload!;
+  }
+
+  async function write(request: Request) {
+    const requestBytes = Request.encode(request).finish();
+    // todo: send to tx
+  }
+
+  async function receive(requestId: number): Promise<Response> {
+    // todo: wait for rx response queue to have message matching id
+    return { requestId: 0, payload: undefined };
+  }
+
+  const requestId = new Uint32Array(1);
+  function generateRequestId(): number {
+    return requestId[0]++;
   }
 
   return { status, connect, send };

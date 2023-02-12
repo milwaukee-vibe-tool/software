@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
 import { useConnectionStore } from "./connection";
 import { DeleteLog } from "../protobuf/build/typescript/protos/requests/deleteLog";
 import { FormatSd } from "../protobuf/build/typescript/protos/requests/formatSd";
@@ -8,16 +7,6 @@ import { ListLogs } from "../protobuf/build/typescript/protos/requests/listLogs"
 import { NewLog } from "../protobuf/build/typescript/protos/requests/newLog";
 import { LogList } from "../protobuf/build/typescript/protos/responses/logList";
 import { LogInfo } from "../protobuf/build/typescript/protos/responses/logInfo";
-
-function exists<Type>(payload?: Type): Type {
-  // todo: is this crappy code? it feels like crappy code
-  return (
-    payload! ??
-    (() => {
-      throw new Error("Response type is incorrect.");
-    })
-  );
-}
 
 export const useControlStore = defineStore("control", () => {
   const connectionStore = useConnectionStore();
@@ -31,13 +20,23 @@ export const useControlStore = defineStore("control", () => {
     return connectionStore.send({ formatSd });
   }
   async function getLog(getLog: GetLog): Promise<LogInfo> {
-    return exists((await connectionStore.send({ getLog })).logInfo);
+    return checkDefined((await connectionStore.send({ getLog })).logInfo);
   }
   async function listLogs(listLogs: ListLogs): Promise<LogList> {
-    return exists((await connectionStore.send({ listLogs })).logList);
+    return checkDefined((await connectionStore.send({ listLogs })).logList);
   }
   async function newLog(newLog: NewLog) {
     return connectionStore.send({ newLog });
+  }
+
+  function checkDefined<Type>(payload?: Type): Type {
+    // todo: is this crappy code? it feels like crappy code
+    return (
+      payload! ??
+      (() => {
+        throw new Error("Response type is incorrect.");
+      })
+    );
   }
 
   return { deleteLog, formatSd, getLog, listLogs, newLog };
