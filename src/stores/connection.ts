@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import ChecksumDriver from "../drivers/checksum/checksum";
+import IPv4Checksum from "../drivers/checksum/ipv4";
 import { SerialMock } from "../drivers/serial/mock";
 import SerialDriver from "../drivers/serial/serial";
 import {
@@ -19,7 +21,8 @@ export enum ConnectionStatus {
 }
 
 export const useConnectionStore = defineStore("connection", () => {
-  const driver: SerialDriver = new SerialMock();
+  const serialDriver: SerialDriver = new SerialMock();
+  const checksumDriver: ChecksumDriver = new IPv4Checksum();
 
   const status = ref(ConnectionStatus.Disconnected);
 
@@ -29,7 +32,7 @@ export const useConnectionStore = defineStore("connection", () => {
     status.value = ConnectionStatus.Connecting;
 
     try {
-      await driver.connect();
+      await serialDriver.connect();
       status.value = ConnectionStatus.Connected;
     } catch (error) {
       status.value = ConnectionStatus.Disconnected;
@@ -43,7 +46,7 @@ export const useConnectionStore = defineStore("connection", () => {
     status.value = ConnectionStatus.Disconnecting;
 
     try {
-      await driver.disconnect();
+      await serialDriver.disconnect();
       status.value = ConnectionStatus.Disconnected;
     } catch (error) {
       status.value = ConnectionStatus.Connected;
