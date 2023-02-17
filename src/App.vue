@@ -10,7 +10,7 @@
     </q-header>
 
     <q-drawer show-if-above v-model="drawer.open" side="left" bordered>
-      <!-- drawer content -->
+      <LogList />
     </q-drawer>
 
     <q-page-container>
@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import Connection from "./components/Connection.vue";
+import LogList from "./components/LogList.vue";
 import { useDrawerStore } from "./stores/drawer";
 
 export default {
@@ -30,6 +31,7 @@ export default {
   },
   components: {
     Connection,
+    LogList,
   },
 };
 </script>
