@@ -25,6 +25,8 @@ export default {
 import { ref } from "vue";
 import { useConnectionStore } from "../stores/connection";
 import { useRoute } from "vue-router";
+import ErrorOverlay from "../components/ErrorOverlay.vue";
+import LoadingOverlay from "../components/LoadingOverlay.vue";
 
 const connectionStore = useConnectionStore();
 const route = useRoute();
@@ -52,8 +54,6 @@ async function refresh() {
 async function loadChunks() {
   state.value = State.LOADING_CHUNK;
 
-  console.log("loading chunks");
-
   try {
     let chunkLength = 0;
     do {
@@ -76,4 +76,6 @@ async function loadChunks() {
 
   state.value = State.LOADED;
 }
+
+refresh();
 </script>
