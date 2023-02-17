@@ -22,7 +22,6 @@ export enum ConnectionStatus {
 
 export const useConnectionStore = defineStore("connection", () => {
   const serialDriver: SerialDriver = new SerialMock();
-  const checksumDriver: ChecksumDriver = new IPv4Checksum();
 
   const status = ref(ConnectionStatus.Disconnected);
 
@@ -61,10 +60,7 @@ export const useConnectionStore = defineStore("connection", () => {
     return response.payload!;
   }
 
-  async function write(request: Request) {
-    const payloadBytes = Request.encode(request).finish();
-    // todo: send to tx using protocol?
-  }
+  async function write(request: Request) {}
 
   async function receive(requestId: number): Promise<Response> {
     // todo: wait for rx response queue to have message matching id
