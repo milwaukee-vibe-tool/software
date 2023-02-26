@@ -1,9 +1,17 @@
+import Emittery from "emittery";
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import ChecksumDriver from "../drivers/checksum/checksum";
-import IPv4Checksum from "../drivers/checksum/ipv4";
+import {
+  convertBytesToResponses,
+  convertRequestToBytes,
+} from "../drivers/protocol/protocol";
 import { SerialMock } from "../drivers/serial/mock";
-import SerialDriver from "../drivers/serial/serial";
+import SerialDriver, {
+  SerialEvent,
+  SerialDisconnected,
+  SerialReceived,
+  SerialEventTopic,
+} from "../drivers/serial/serial";
 import {
   Request,
   RequestPayload,
@@ -12,6 +20,9 @@ import {
   Response,
   ResponsePayload,
 } from "../protobuf/build/typescript/protos/response";
+import { concatBytes } from "../utils/bytes";
+
+const RESPONSE_TIMEOUT = 5000;
 
 export enum ConnectionStatus {
   Connected,
@@ -21,12 +32,17 @@ export enum ConnectionStatus {
 }
 
 export const useConnectionStore = defineStore("connection", () => {
+  const receiver = new Emittery();
+
   const serialDriver: SerialDriver = new SerialMock();
+
+  serialDriver.subscribe(SerialEventTopic.Disconnected, eventDisconnected);
+  serialDriver.subscribe(SerialEventTopic.Received, eventReceived);
 
   const status = ref(ConnectionStatus.Disconnected);
 
   async function connect() {
-    if (status.value != ConnectionStatus.Disconnected) return;
+    if (status.value !== ConnectionStatus.Disconnected) return;
 
     status.value = ConnectionStatus.Connecting;
 
@@ -40,7 +56,7 @@ export const useConnectionStore = defineStore("connection", () => {
   }
 
   async function disconnect() {
-    if (status.value != ConnectionStatus.Connected) return;
+    if (status.value !== ConnectionStatus.Connected) return;
 
     status.value = ConnectionStatus.Disconnecting;
 
@@ -54,22 +70,54 @@ export const useConnectionStore = defineStore("connection", () => {
   }
 
   async function send(payload: RequestPayload): Promise<ResponsePayload> {
+    // Generate request id
     const requestId = generateRequestId();
-    await write({ requestId, payload });
-    const response = await receive(requestId);
-    return response.payload!;
-  }
 
-  async function write(request: Request) {}
+    // Subscribe to receive events
+    const receiverIterator = receiver.events(requestId);
 
-  async function receive(requestId: number): Promise<Response> {
-    // todo: wait for rx response queue to have message matching id
-    return { requestId: 0, payload: undefined };
+    // Transmit request
+    await serialDriver.transmit(convertRequestToBytes({ requestId, payload }));
+
+    // Wait for response
+    let timeout: NodeJS.Timeout;
+    const result = await Promise.race<IteratorResult<Response> | undefined>([
+      receiverIterator.next(),
+      new Promise(
+        (_, reject) => (timeout = setTimeout(() => reject(), RESPONSE_TIMEOUT))
+      ),
+    ]).finally(() => clearTimeout(timeout));
+
+    // Return
+    receiverIterator.return?.();
+    return result?.value.payload;
   }
 
   const requestId = new Uint32Array(1);
   function generateRequestId(): number {
     return requestId[0]++;
+  }
+
+  let byteQueue = new Uint8Array();
+  function processBytes(bytes: Uint8Array) {
+    byteQueue = concatBytes([byteQueue, bytes], Uint8Array);
+    let [responses, remainder] = convertBytesToResponses(byteQueue);
+    byteQueue = remainder;
+    for (let response of responses) receiver.emit(response.requestId, response);
+  }
+
+  function eventDisconnected(event: SerialEvent) {
+    if (event.topic !== SerialEventTopic.Disconnected)
+      throw new Error("Incorrect event received");
+
+    status.value = ConnectionStatus.Disconnected;
+  }
+
+  function eventReceived(event: SerialEvent) {
+    if (event.topic !== SerialEventTopic.Received)
+      throw new Error("Incorrect event received");
+
+    processBytes(event.data.bytes);
   }
 
   return {

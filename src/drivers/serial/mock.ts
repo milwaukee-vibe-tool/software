@@ -1,5 +1,11 @@
 import SerialDriver, { SerialEventTopic, SerialEventHandler } from "./serial";
 import Emittery from "emittery";
+import { Response } from "../../protobuf/build/typescript/protos/response";
+import { LogListLogInfo } from "../../protobuf/build/typescript/protos/responses/logList";
+import {
+  convertBytesToRequests,
+  convertResponseToBytes,
+} from "../protocol/protocol";
 
 export class SerialMock implements SerialDriver {
   emitter: Emittery;
@@ -8,10 +14,11 @@ export class SerialMock implements SerialDriver {
     this.emitter = new Emittery();
   }
   async connect() {
-    return new Promise((resolve) => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
   }
   async disconnect() {
-    return new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    this.emitter.emit(SerialEventTopic.Disconnected, {});
   }
   subscribe(topic: SerialEventTopic, handler: SerialEventHandler) {
     this.emitter.on(topic, handler);
@@ -19,5 +26,57 @@ export class SerialMock implements SerialDriver {
   unsubscribe(topic: SerialEventTopic, handler: SerialEventHandler) {
     this.emitter.off(topic, handler);
   }
-  async transmit(bytes: Uint8Array) {}
+  async transmit(bytes: Uint8Array) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const request = convertBytesToRequests(bytes)[0][0];
+    const response: Response = { requestId: request.requestId, payload: {} };
+    if (request.payload?.listLogs !== undefined) {
+      let mockLogs: LogListLogInfo[] = [
+        {
+          logId: "1.csv",
+        },
+        {
+          logId: "2-testing_this.csv",
+        },
+        {
+          logId: "4.csv",
+        },
+        {
+          logId: "5.csv",
+        },
+        {
+          logId: "6-my_test_log.csv",
+        },
+        {
+          logId: "19-allrightlyTHisLog.csv",
+        },
+        {
+          logId: "20.csv",
+        },
+        {
+          logId: "21.csv",
+        },
+      ];
+      if (request.payload.listLogs.count < mockLogs.length) {
+        mockLogs = mockLogs.splice(0, request.payload.listLogs.count);
+      }
+      response.payload = {
+        logList: {
+          prefix: 6,
+          offset: request.payload.listLogs.offset,
+          count: mockLogs.length,
+          logs: mockLogs,
+        },
+      };
+    } else {
+      throw new Error("Mock: unsupported request");
+    }
+    const responseBytes = convertResponseToBytes(response);
+    this.emitter.emit(SerialEventTopic.Received, {
+      topic: SerialEventTopic.Received,
+      data: {
+        bytes: responseBytes,
+      },
+    });
+  }
 }

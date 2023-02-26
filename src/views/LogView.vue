@@ -60,6 +60,7 @@ async function loadChunks() {
       let payload = await connectionStore.send({
         getLog: { logId: logId, offset: points.value.length, count: THROTTLE },
       });
+      console.log(payload);
 
       let response = payload.logInfo;
       if (response == undefined) throw new Error("Bad response");

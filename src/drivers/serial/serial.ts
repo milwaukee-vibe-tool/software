@@ -1,9 +1,9 @@
 export default interface SerialDriver {
-  connect(): void;
-  disconnect(): void;
+  connect(): Promise<void>;
+  disconnect(): Promise<void>;
   subscribe(topic: SerialEventTopic, handler: SerialEventHandler): void;
   unsubscribe(topic: SerialEventTopic, callback: SerialEventHandler): void;
-  transmit(bytes: Uint8Array): void;
+  transmit(bytes: Uint8Array): Promise<void>;
 }
 
 export class SerialError extends Error {

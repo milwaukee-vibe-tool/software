@@ -1,4 +1,4 @@
-type genericByteArray<T extends byteArrayTypes> = {
+type genericByteArray<T extends ByteArrayType> = {
   new (
     buffer: ArrayBufferLike,
     byteOffset?: number | undefined,
@@ -7,7 +7,7 @@ type genericByteArray<T extends byteArrayTypes> = {
   BYTES_PER_ELEMENT: number;
 };
 
-type byteArrayTypes =
+type ByteArrayType =
   | Int8Array
   | Uint8Array
   | Uint8ClampedArray
@@ -20,27 +20,34 @@ type byteArrayTypes =
   | Float32Array
   | Float64Array;
 
-export function convertBytes<T extends byteArrayTypes>(
-  bytes: byteArrayTypes,
+export function convertBytes<T extends ByteArrayType>(
+  bytes: ByteArrayType,
   type: genericByteArray<T>
 ): T {
   // Create a padded byte array that fits the target data type
   const padded = new Uint8Array(
-    Math.ceil(bytes.length / type.BYTES_PER_ELEMENT) * type.BYTES_PER_ELEMENT
+    Math.ceil(bytes.length / type.BYTES_PER_ELEMENT) *
+      type.BYTES_PER_ELEMENT *
+      bytes.BYTES_PER_ELEMENT
   );
   // Copy given array to padded array
   padded.set(new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength));
   // Convert byte array to target type
-  return new type(padded.buffer, padded.byteOffset, padded.byteLength);
+  return new type(
+    padded.buffer,
+    padded.byteOffset,
+    padded.byteLength / type.BYTES_PER_ELEMENT
+  );
 }
 
-export function concatBytes<T extends byteArrayTypes>(
-  list: byteArrayTypes[],
+export function concatBytes<T extends ByteArrayType>(
+  list: ByteArrayType[],
   type: genericByteArray<T>
 ): T {
-  const byteLists = list.map((bytes) => convertBytes(bytes, Uint8Array));
-  const allBytes = new Uint8Array(
-    byteLists.reduce((length, bytes) => length + bytes.length, 0)
+  return convertBytes(
+    new Uint8Array(
+      list.flatMap((bytes) => Array.from(convertBytes(bytes, Uint8Array)))
+    ),
+    type
   );
-  return convertBytes(allBytes, type);
 }

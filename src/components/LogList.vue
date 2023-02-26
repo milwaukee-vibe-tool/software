@@ -1,5 +1,6 @@
 <template>
   Hello world, and welcome to the file list.
+
   <q-btn
     @click="refreshLogs"
     color="primary"
@@ -8,7 +9,7 @@
     Refresh
   </q-btn>
 
-  <q-dialog :v-model="state === State.ERROR">ah</q-dialog>
+  <!-- <q-dialog :v-model="state === State.ERROR">ah</q-dialog> -->
 
   <q-input
     filled
@@ -33,7 +34,15 @@
     </template>
   </q-input>
 
-  <q-infinite-scroll ref="infiniteScroll" @load="loadLogs"> </q-infinite-scroll>
+  <q-infinite-scroll ref="infiniteScroll" @load="loadLogs">
+    <q-list>
+      <q-item v-for="log in logs">
+        <q-item-section>
+          <q-item-label>yaya{{ log }}</q-item-label>
+        </q-item-section>
+      </q-item>
+    </q-list>
+  </q-infinite-scroll>
 
   <loading-overlay :show="state === State.LOADING" />
   <error-overlay :show="state === State.ERROR" :refresh="refreshLogs" />
@@ -80,7 +89,7 @@ async function loadLogs(_: number, done: (stop: boolean) => void) {
     if (logs.value.length != response.offset) throw new Error("Index mismatch");
 
     prefix.value = response.prefix;
-    logs.value.concat(response.logs.map((entry) => entry.logId));
+    logs.value = logs.value.concat(response.logs.map((entry) => entry.logId));
     done(response.logs.length < THROTTLE);
   } catch (e) {
     state.value = State.ERROR;

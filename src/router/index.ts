@@ -15,7 +15,7 @@ const router = createRouter({
       component: SettingsView,
     },
     {
-      path: "/log/:id",
+      path: "/log/:logId",
       children: [
         {
           path: "histogram",
