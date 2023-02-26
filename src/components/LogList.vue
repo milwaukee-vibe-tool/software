@@ -48,6 +48,12 @@
           <q-item-section>
             <q-item-label>yaya{{ log }}</q-item-label>
           </q-item-section>
+          <q-item-section side>
+            <div>
+              <q-btn flat dense round icon="download"></q-btn>
+              <q-btn flat dense round icon="delete"></q-btn>
+            </div>
+          </q-item-section>
         </q-item>
       </q-list>
     </q-infinite-scroll>
