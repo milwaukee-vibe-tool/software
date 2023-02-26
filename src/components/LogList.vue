@@ -1,48 +1,57 @@
 <template>
-  Hello world, and welcome to the file list.
+  <q-list>
+    <q-item> Hello world, and welcome to the file list. </q-item>
 
-  <q-btn
-    @click="refreshLogs"
-    color="primary"
-    :loading="state === State.LOADING"
-  >
-    Refresh
-  </q-btn>
+    <q-item>
+      <q-btn
+        @click="refreshLogs"
+        color="primary"
+        :loading="state === State.LOADING"
+      >
+        Refresh
+      </q-btn>
+    </q-item>
 
-  <!-- <q-dialog :v-model="state === State.ERROR">ah</q-dialog> -->
+    <!-- <q-dialog :v-model="state === State.ERROR">ah</q-dialog> -->
 
-  <q-input
-    filled
-    v-model="newLogName"
-    :label="prefix + '_'"
-    counter
-    maxlength="20"
-  >
-    <template v-slot:hint>New Log Name</template>
+    <q-item>
+      <q-input
+        filled
+        v-model="newLogName"
+        :label="prefix + '_'"
+        counter
+        maxlength="20"
+      >
+        <template v-slot:hint>New Log Name</template>
 
-    <template v-slot:append>
-      <q-icon
-        v-if="newLogName != ''"
-        name="close"
-        @click="newLogName = ''"
-        class="cursor-pointer"
-      />
-    </template>
+        <template v-slot:append>
+          <q-icon
+            v-if="newLogName != ''"
+            name="close"
+            @click="newLogName = ''"
+            class="cursor-pointer"
+          />
+        </template>
 
-    <template v-slot:after>
-      <q-btn round dense flat icon="send" />
-    </template>
-  </q-input>
+        <template v-slot:after>
+          <q-btn round dense flat icon="send" />
+        </template>
+      </q-input>
+    </q-item>
 
-  <q-infinite-scroll ref="infiniteScroll" @load="loadLogs">
-    <q-list>
-      <q-item v-for="log in logs">
-        <q-item-section>
-          <q-item-label>yaya{{ log }}</q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-list>
-  </q-infinite-scroll>
+    <q-separator spaced />
+    <q-item-label header>Files</q-item-label>
+
+    <q-infinite-scroll ref="infiniteScroll" @load="loadLogs">
+      <q-list>
+        <q-item v-for="log in logs" clickable v-ripple>
+          <q-item-section>
+            <q-item-label>yaya{{ log }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-infinite-scroll>
+  </q-list>
 
   <loading-overlay :show="state === State.LOADING" />
   <error-overlay :show="state === State.ERROR" :refresh="refreshLogs" />
