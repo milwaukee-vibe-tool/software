@@ -11,6 +11,7 @@ import SerialDriver, {
   SerialDisconnected,
   SerialReceived,
   SerialEventTopic,
+  ErrorNotConnected,
 } from "../drivers/serial/serial";
 import {
   Request,
@@ -70,6 +71,11 @@ export const useConnectionStore = defineStore("connection", () => {
   }
 
   async function send(payload: RequestPayload): Promise<ResponsePayload> {
+    // Ensure connected
+    if (status.value !== ConnectionStatus.Connected) {
+      throw ErrorNotConnected;
+    }
+
     // Generate request id
     const requestId = generateRequestId();
 

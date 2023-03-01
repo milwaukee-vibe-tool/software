@@ -33,28 +33,28 @@ export class SerialMock implements SerialDriver {
     if (request.payload?.listLogs !== undefined) {
       let mockLogs: LogListLogInfo[] = [
         {
-          logId: "1.csv",
+          logId: "1",
         },
         {
-          logId: "2-testing_this.csv",
+          logId: "2-testing_this",
         },
         {
-          logId: "4.csv",
+          logId: "4",
         },
         {
-          logId: "5.csv",
+          logId: "5",
         },
         {
-          logId: "6-my_test_log.csv",
+          logId: "6-my_test_log",
         },
         {
-          logId: "19-allrightlyTHisLog.csv",
+          logId: "19-allrightlyTHisLog",
         },
         {
-          logId: "20.csv",
+          logId: "20",
         },
         {
-          logId: "21.csv",
+          logId: "21",
         },
       ];
       if (request.payload.listLogs.count < mockLogs.length) {

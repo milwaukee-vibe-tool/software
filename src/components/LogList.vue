@@ -12,8 +12,6 @@
       </q-btn>
     </q-item>
 
-    <!-- <q-dialog :v-model="state === State.ERROR">ah</q-dialog> -->
-
     <q-item>
       <q-input
         filled
@@ -44,14 +42,20 @@
 
     <q-infinite-scroll ref="infiniteScroll" @load="loadLogs">
       <q-list>
-        <q-item v-for="log in logs" clickable v-ripple>
+        <q-item v-for="log in logs" clickable v-ripple @click="redirect(log)">
           <q-item-section>
             <q-item-label>yaya{{ log }}</q-item-label>
           </q-item-section>
           <q-item-section side>
             <div>
               <q-btn flat dense round icon="download"></q-btn>
-              <q-btn flat dense round icon="delete"></q-btn>
+              <q-btn
+                flat
+                dense
+                round
+                icon="delete"
+                @click="deleteLog(log)"
+              ></q-btn>
             </div>
           </q-item-section>
         </q-item>
@@ -59,16 +63,21 @@
     </q-infinite-scroll>
   </q-list>
 
-  <loading-overlay :show="state === State.LOADING" />
-  <error-overlay :show="state === State.ERROR" :refresh="refreshLogs" />
+  <status-overlay
+    :loading="state === State.LOADING"
+    :error="state === State.ERROR"
+    @refresh="refreshLogs"
+  />
 </template>
 
 <script setup lang="ts">
 import { QInfiniteScroll } from "quasar";
 import { ref } from "vue";
-import { useConnectionStore } from "../stores/connection";
-import ErrorOverlay from "./ErrorOverlay.vue";
-import LoadingOverlay from "./LoadingOverlay.vue";
+import { ConnectionStatus, useConnectionStore } from "../stores/connection";
+import StatusOverlay from "./StatusOverlay.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const connectionStore = useConnectionStore();
 
@@ -85,6 +94,17 @@ const logs = ref<string[]>([]);
 const prefix = ref(0);
 const infiniteScroll = ref<QInfiniteScroll | null>(null);
 const newLogName = ref("");
+
+connectionStore.$subscribe(() => {
+  switch (connectionStore.status) {
+    case ConnectionStatus.Connected:
+      if (state.value === State.ERROR) refreshLogs();
+      break;
+    case ConnectionStatus.Disconnected:
+      if (state.value === State.LOADED) state.value = State.ERROR;
+      break;
+  }
+});
 
 async function refreshLogs() {
   state.value = State.LOADING;
@@ -134,5 +154,15 @@ async function deleteLog(logId: string) {
     throw e;
   }
   await refreshLogs();
+}
+
+function redirect(log: string) {
+  // todo: use same view query param, if exists
+  // let currentPath = router.currentRoute.value.path;
+  router.push({
+    name: "log",
+    params: { logId: log },
+    query: { view: "line-graph" },
+  });
 }
 </script>

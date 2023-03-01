@@ -15,18 +15,20 @@ export default {
 </script> -->
 
 <template>
-  Hello world, and welcome to the log view. whoo.
+  Hello world, and welcome to the log view. whoo. Log: {{ logId }}
 
-  <loading-overlay :show="state === State.LOADING" />
-  <error-overlay :show="state === State.ERROR" :refresh="refresh" />
+  <status-overlay
+    :loading="state === State.LOADING"
+    :error="state === State.ERROR"
+    @refresh="refresh"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import { useConnectionStore } from "../stores/connection";
 import { useRoute } from "vue-router";
-import ErrorOverlay from "../components/ErrorOverlay.vue";
-import LoadingOverlay from "../components/LoadingOverlay.vue";
+import StatusOverlay from "../components/StatusOverlay.vue";
 
 const connectionStore = useConnectionStore();
 const route = useRoute();

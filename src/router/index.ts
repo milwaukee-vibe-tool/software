@@ -8,24 +8,18 @@ const router = createRouter({
   routes: [
     {
       path: "/",
+      name: "start",
       component: StartView,
     },
     {
       path: "/settings",
+      name: "settings",
       component: SettingsView,
     },
     {
       path: "/log/:logId",
-      children: [
-        {
-          path: "histogram",
-          component: LogView,
-        },
-        {
-          path: "line-graph",
-          component: LogView,
-        },
-      ],
+      name: "log",
+      component: LogView,
     },
   ],
 });

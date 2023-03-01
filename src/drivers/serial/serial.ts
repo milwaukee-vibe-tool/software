@@ -6,11 +6,7 @@ export default interface SerialDriver {
   transmit(bytes: Uint8Array): Promise<void>;
 }
 
-export class SerialError extends Error {
-  constructor(m: string) {
-    super(m);
-  }
-}
+export const ErrorNotConnected = new Error("Not connected.");
 
 export enum SerialEventTopic {
   Disconnected = "disconnected",
