@@ -16,6 +16,7 @@ export default {
 
 <template>
   Hello world, and welcome to the log view. whoo. Log: {{ logId }}
+  <LineGraph :points="points" />
 
   <status-overlay
     :loading="state === State.LOADING"
@@ -29,6 +30,7 @@ import { ref } from "vue";
 import { useConnectionStore } from "../stores/connection";
 import { useRoute } from "vue-router";
 import StatusOverlay from "../components/StatusOverlay.vue";
+import LineGraph from "../components/LineGraph.vue";
 
 const connectionStore = useConnectionStore();
 const route = useRoute();
@@ -68,9 +70,13 @@ async function loadChunks() {
       if (response == undefined) throw new Error("Bad response");
 
       sampleRate.value = response.sampleRate;
-      points.value.concat(
-        response.points.map((point) => [point.stamp, point.value])
+      points.value = points.value.concat(
+        response.points.map((point, index) => [
+          response!.offset + index,
+          point.value,
+        ])
       );
+      points.value.sort((a, b) => a[0] - b[0]);
     } while (chunkLength >= THROTTLE);
   } catch (e) {
     state.value = State.ERROR;

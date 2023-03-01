@@ -6,6 +6,10 @@ import {
   convertBytesToRequests,
   convertResponseToBytes,
 } from "../protocol/protocol";
+import {
+  LogInfo,
+  DataPoint,
+} from "../../protobuf/build/typescript/protos/responses/logInfo";
 
 export class SerialMock implements SerialDriver {
   emitter: Emittery;
@@ -31,6 +35,7 @@ export class SerialMock implements SerialDriver {
     const request = convertBytesToRequests(bytes)[0][0];
     const response: Response = { requestId: request.requestId, payload: {} };
     if (request.payload?.listLogs !== undefined) {
+      let requestPayload = request.payload.listLogs;
       let mockLogs: LogListLogInfo[] = [
         {
           logId: "1",
@@ -57,15 +62,59 @@ export class SerialMock implements SerialDriver {
           logId: "21",
         },
       ];
-      if (request.payload.listLogs.count < mockLogs.length) {
-        mockLogs = mockLogs.splice(0, request.payload.listLogs.count);
+      const total = mockLogs.length;
+      if (requestPayload.count < mockLogs.length) {
+        mockLogs = mockLogs.slice(
+          requestPayload.offset,
+          requestPayload.offset + requestPayload.count
+        );
       }
       response.payload = {
         logList: {
           prefix: 6,
-          offset: request.payload.listLogs.offset,
+          offset: requestPayload.offset,
           count: mockLogs.length,
+          total: total,
           logs: mockLogs,
+        },
+      };
+    } else if (request.payload?.getLog !== undefined) {
+      let requestPayload = request.payload.getLog;
+      let mockPoints: DataPoint[] = [
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+        { value: 2 },
+      ];
+      const total = mockPoints.length;
+      if (requestPayload.count < mockPoints.length) {
+        mockPoints = mockPoints.slice(
+          requestPayload.offset,
+          requestPayload.offset + requestPayload.count
+        );
+      }
+      response.payload = {
+        logInfo: {
+          logId: requestPayload.logId,
+          sampleRate: 20,
+          offset: requestPayload.offset,
+          count: requestPayload.count,
+          total: total,
+          points: [{ value: 2 }],
         },
       };
     } else {
