@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import LogView from "../views/LogView.vue";
+import FileSystemLogView from "../views/FileSystemLogView.vue";
+import BluetoothLogView from "../views/BluetoothLogView.vue";
 import SettingsView from "../views/SettingsView.vue";
 import StartView from "../views/StartView.vue";
 
@@ -17,9 +18,14 @@ const router = createRouter({
       component: SettingsView,
     },
     {
-      path: "/log/:logId",
-      name: "log",
-      component: LogView,
+      path: "/filesystem/log/:logId",
+      name: "filesystem/log",
+      component: FileSystemLogView,
+    },
+    {
+      path: "/bluetooth/log/:logId",
+      name: "bluetooth/log",
+      component: BluetoothLogView,
     },
   ],
 });

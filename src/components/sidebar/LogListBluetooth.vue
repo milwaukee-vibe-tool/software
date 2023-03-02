@@ -73,8 +73,8 @@
 <script setup lang="ts">
 import { QInfiniteScroll } from "quasar";
 import { ref } from "vue";
-import { ConnectionStatus, useConnectionStore } from "../stores/connection";
-import StatusOverlay from "./StatusOverlay.vue";
+import { ConnectionStatus, useConnectionStore } from "../../stores/connection";
+import StatusOverlay from "../StatusOverlay.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();

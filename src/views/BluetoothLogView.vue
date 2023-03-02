@@ -30,7 +30,7 @@ import { ref } from "vue";
 import { useConnectionStore } from "../stores/connection";
 import { useRoute } from "vue-router";
 import StatusOverlay from "../components/StatusOverlay.vue";
-import LineGraph from "../components/LineGraph.vue";
+import LineGraph from "../components/log/LineGraph.vue";
 
 const connectionStore = useConnectionStore();
 const route = useRoute();

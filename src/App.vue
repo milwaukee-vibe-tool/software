@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import Connection from "./components/Connection.vue";
-import LogList from "./components/LogList.vue";
+import LogList from "./components/sidebar/LogList.vue";
 import { useDrawerStore } from "./stores/drawer";
 
 export default {
