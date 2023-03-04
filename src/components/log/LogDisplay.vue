@@ -7,22 +7,21 @@
   </q-chip>
 
   <q-tabs
-    v-model="tab"
     class="text-grey"
     active-color="primary"
     indicator-color="primary"
     align="justify"
     narrow-indicator
   >
-    <q-tab name="lineGraph" label="Line Graph" />
-    <q-tab name="histogram" label="Histogram" />
-    <q-tab name="dataTable" label="Data Table" />
+    <q-route-tab :to="{ query: { view: 'line-graph' } }" label="Line Graph" />
+    <q-route-tab :to="{ query: { view: 'histogram' } }" label="Histogram" />
+    <q-route-tab :to="{ query: { view: 'data-table' } }" label="Data Table" />
   </q-tabs>
 
   <q-separator />
 
-  <q-tab-panels v-model="tab" animated>
-    <q-tab-panel name="lineGraph">
+  <q-tab-panels v-model="$route.query.view" animated>
+    <q-tab-panel name="line-graph">
       <line-graph :content="props.log.content" />
     </q-tab-panel>
 
@@ -30,12 +29,11 @@
       <histogram :content="props.log.content" />
     </q-tab-panel>
 
-    <q-tab-panel name="dataTable"></q-tab-panel>
+    <q-tab-panel name="data-table"></q-tab-panel>
   </q-tab-panels>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { Log } from "../../drivers/log/log";
 import LineGraph from "./LineGraph.vue";
 import Histogram from "./Histogram.vue";
@@ -43,6 +41,4 @@ import Histogram from "./Histogram.vue";
 const props = defineProps<{
   log: Log;
 }>();
-
-const tab = ref("lineGraph");
 </script>

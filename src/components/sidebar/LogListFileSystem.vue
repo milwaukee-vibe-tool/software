@@ -24,9 +24,10 @@ import { QFile } from "quasar";
 import { ref } from "vue";
 import LogListNavigator from "./LogListNavigator.vue";
 import { useFileSystemStore } from "../../stores/filesystem";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const router = useRouter();
+const route = useRoute();
 
 const filesystemStore = useFileSystemStore();
 
@@ -46,7 +47,7 @@ function navigate(index: number) {
   router.push({
     name: "filesystem/log",
     params: { logId: getLogs()[index] },
-    query: { view: router.currentRoute.value.query.view },
+    query: { view: route.query.view || "line-graph" },
   });
 }
 </script>
