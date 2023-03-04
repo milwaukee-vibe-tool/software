@@ -1,4 +1,11 @@
 <template>
+  <q-chip color="primary" text-color="white" icon="description">
+    File: {{ log.name }}
+  </q-chip>
+  <q-chip color="primary" text-color="white" icon="bar_chart">
+    Sample Rate: {{ log.content.sampleRate }} Hz
+  </q-chip>
+
   <q-tabs
     v-model="tab"
     class="text-grey"
@@ -19,7 +26,9 @@
       <line-graph :content="props.log.content" />
     </q-tab-panel>
 
-    <q-tab-panel name="histogram"></q-tab-panel>
+    <q-tab-panel name="histogram">
+      <histogram :content="props.log.content" />
+    </q-tab-panel>
 
     <q-tab-panel name="dataTable"></q-tab-panel>
   </q-tab-panels>
@@ -29,6 +38,7 @@
 import { ref } from "vue";
 import { Log } from "../../drivers/log/log";
 import LineGraph from "./LineGraph.vue";
+import Histogram from "./Histogram.vue";
 
 const props = defineProps<{
   log: Log;

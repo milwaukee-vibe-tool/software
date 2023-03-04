@@ -1,5 +1,5 @@
 <template>
-  <Scatter :options="options" :data="data()" />
+  <Line :options="options" :data="data()" />
 </template>
 
 <script setup lang="ts">
@@ -7,17 +7,21 @@ import {
   CategoryScale,
   Chart as ChartJS,
   ChartData,
+  ChartOptions,
   Legend,
   LinearScale,
   LineElement,
   PointElement,
   Title,
   Tooltip,
+  Filler,
 } from "chart.js";
 import { Point } from "chart.js/dist/helpers/helpers.canvas";
-import { Scatter } from "vue-chartjs";
+import { getCssVar } from "quasar";
+import { Line } from "vue-chartjs";
 import { LogContent } from "../../drivers/log/log";
-import annotationPlugin from "chartjs-plugin-annotation";
+import Color from "color";
+import { useSettingsStore } from "../../stores/settings";
 
 ChartJS.register(
   CategoryScale,
@@ -27,14 +31,16 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  annotationPlugin
+  Filler
 );
+
+const settingsStore = useSettingsStore();
 
 const props = defineProps<{
   content: LogContent;
 }>();
 
-function data(): ChartData<"scatter", Point[]> {
+function data(): ChartData<"line", Point[]> {
   return {
     datasets: [
       {
@@ -42,23 +48,22 @@ function data(): ChartData<"scatter", Point[]> {
           x: value[0] / props.content.sampleRate,
           y: value[1],
         })),
-        showLine: true,
+        fill: {
+          value: settingsStore.threshold,
+          above: Color(getCssVar("negative")!).alpha(0.25).string(),
+          below: Color().alpha(0).string(),
+        },
       },
     ],
   };
 }
 
-const options = {
+const options: ChartOptions<"line"> = {
   responsive: true,
-  plugins: {
-    annotation: {
-      annotations: {
-        line1: {
-          type: "line",
-          yMin: 5,
-          yMax: 5,
-        },
-      },
+  maintainAspectRatio: false,
+  scales: {
+    xAxis: {
+      type: "linear",
     },
   },
 };

@@ -10,8 +10,9 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.15.10",
+    "@types/color": "^3.0.3",
     "chart.js": "^4.2.0",
-    "chartjs-plugin-annotation": "^2.1.2",
+    "color": "^4.2.3",
     "emittery": "^1.0.1",
     "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.6.0",
