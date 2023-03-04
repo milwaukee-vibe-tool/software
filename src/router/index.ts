@@ -18,12 +18,12 @@ const router = createRouter({
       component: SettingsView,
     },
     {
-      path: "/filesystem/log/:logId",
+      path: "/filesystem/log/:logId/:view",
       name: "filesystem/log",
       component: FileSystemLogView,
     },
     {
-      path: "/bluetooth/log/:logId",
+      path: "/bluetooth/log/:logId/:view",
       name: "bluetooth/log",
       component: BluetoothLogView,
     },

@@ -46,8 +46,10 @@ function download(index: number) {}
 function navigate(index: number) {
   router.push({
     name: "filesystem/log",
-    params: { logId: getLogs()[index] },
-    query: { view: route.query.view || "line-graph" },
+    params: {
+      logId: getLogs()[index],
+      view: route.params.view || "line-graph",
+    },
   });
 }
 </script>

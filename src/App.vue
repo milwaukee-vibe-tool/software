@@ -15,11 +15,7 @@
 
     <q-page-container>
       <q-page>
-        <router-view v-slot="{ Component }">
-          <keep-alive>
-            <component :is="Component" :key="$route.path"></component>
-          </keep-alive>
-        </router-view>
+        <router-view />
       </q-page>
     </q-page-container>
   </q-layout>

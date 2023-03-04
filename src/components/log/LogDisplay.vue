@@ -13,14 +13,14 @@
     align="justify"
     narrow-indicator
   >
-    <q-route-tab :to="{ query: { view: 'line-graph' } }" label="Line Graph" />
-    <q-route-tab :to="{ query: { view: 'histogram' } }" label="Histogram" />
-    <q-route-tab :to="{ query: { view: 'data-table' } }" label="Data Table" />
+    <q-route-tab to="line-graph" label="Line Graph" />
+    <q-route-tab to="histogram" label="Histogram" />
+    <q-route-tab to="data-table" label="Data Table" />
   </q-tabs>
 
   <q-separator />
 
-  <q-tab-panels v-model="$route.query.view" animated>
+  <q-tab-panels v-model="$route.params.view" animated>
     <q-tab-panel name="line-graph">
       <line-graph :content="props.log.content" />
     </q-tab-panel>
