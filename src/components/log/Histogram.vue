@@ -17,7 +17,7 @@ import {
 import { Point } from "chart.js/dist/helpers/helpers.canvas";
 import Color from "color";
 import { getCssVar } from "quasar";
-import { reactive } from "vue";
+import { ref } from "vue";
 import { Bar, Chart } from "vue-chartjs";
 import { LogContent } from "../../drivers/log/log";
 import { useSettingsStore } from "../../stores/settings";
@@ -37,17 +37,15 @@ const props = defineProps<{
   content: LogContent;
 }>();
 
-const settings = reactive({
-  binWidth: 1,
-});
+const binWidth = ref(1);
 
 function data(): ChartData<"bar", number[]> {
-  const getBin = (val: number) => Math.floor(val / settings.binWidth);
+  const getBin = (val: number) => Math.floor(val / binWidth.value);
   const pointBins = props.content.points.map((point) => getBin(point[1]));
   const maxBin = Math.max(...pointBins);
   const bins = new Array(maxBin + 1).fill(0);
   pointBins.forEach((bin) => bins[bin]++);
-  const binUnits = bins.map((_, index) => index * settings.binWidth);
+  const binUnits = bins.map((_, index) => index * binWidth.value);
   return {
     labels: binUnits,
     datasets: [
