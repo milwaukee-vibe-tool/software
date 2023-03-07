@@ -1,5 +1,5 @@
 <template>
-  <Bar :options="options" :data="data()" />
+  <Bar :options="options()" :data="data()" />
 </template>
 
 <script setup lang="ts">
@@ -61,8 +61,31 @@ function data(): ChartData<"bar", number[]> {
   };
 }
 
-const options: ChartOptions<"bar"> = {
-  responsive: true,
-  maintainAspectRatio: false,
-};
+function options(): ChartOptions<"bar"> {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        display: true,
+        title: {
+          display: true,
+          text: "Vibrations (m/s)",
+        },
+      },
+      y: {
+        display: true,
+        title: {
+          display: true,
+          text: "Count",
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  };
+}
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <Line :options="options" :data="data()" />
+  <Line :options="options()" :data="data()" />
 </template>
 
 <script setup lang="ts">
@@ -58,13 +58,32 @@ function data(): ChartData<"line", Point[]> {
   };
 }
 
-const options: ChartOptions<"line"> = {
-  responsive: true,
-  maintainAspectRatio: false,
-  scales: {
-    xAxis: {
-      type: "linear",
+function options(): ChartOptions<"line"> {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        display: true,
+        type: "linear",
+        title: {
+          display: true,
+          text: "Seconds",
+        },
+      },
+      y: {
+        display: true,
+        title: {
+          display: true,
+          text: "Vibrations (m/s)",
+        },
+      },
     },
-  },
-};
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  };
+}
 </script>
