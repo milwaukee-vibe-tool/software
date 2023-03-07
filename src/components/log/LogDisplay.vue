@@ -1,36 +1,42 @@
 <template>
-  <q-chip color="primary" text-color="white" icon="description">
-    File: {{ log.name }}
-  </q-chip>
-  <q-chip color="primary" text-color="white" icon="bar_chart">
-    Sample Rate: {{ log.content.sampleRate }} Hz
-  </q-chip>
+  <div class="column" style="min-height: inherit">
+    <div class="col-auto">
+      <q-chip color="primary" text-color="white" icon="description">
+        File: {{ log.name }}
+      </q-chip>
+      <q-chip color="primary" text-color="white" icon="bar_chart">
+        Sample Rate: {{ log.content.sampleRate }} Hz
+      </q-chip>
 
-  <q-tabs
-    class="text-grey"
-    active-color="primary"
-    indicator-color="primary"
-    align="justify"
-    narrow-indicator
-  >
-    <q-route-tab to="line-graph" label="Line Graph" />
-    <q-route-tab to="histogram" label="Histogram" />
-    <q-route-tab to="data-table" label="Data Table" />
-  </q-tabs>
+      <q-tabs
+        class="text-grey"
+        active-color="primary"
+        indicator-color="primary"
+        align="justify"
+        narrow-indicator
+      >
+        <q-route-tab to="line-graph" label="Line Graph" />
+        <q-route-tab to="histogram" label="Histogram" />
+        <q-route-tab to="data-table" label="Data Table" />
+      </q-tabs>
 
-  <q-separator />
+      <q-separator />
+    </div>
 
-  <q-tab-panels v-model="$route.params.view" animated>
-    <q-tab-panel name="line-graph">
-      <line-graph :content="props.log.content" />
-    </q-tab-panel>
+    <div class="col-grow row">
+      <q-tab-panels v-model="$route.params.view" animated class="full-width">
+        <q-tab-panel name="line-graph">
+          <line-graph :content="props.log.content" />
+        </q-tab-panel>
 
-    <q-tab-panel name="histogram">
-      <histogram :content="props.log.content" />
-    </q-tab-panel>
+        <q-tab-panel name="histogram">
+          <histogram :content="props.log.content" />
+        </q-tab-panel>
 
-    <q-tab-panel name="data-table"></q-tab-panel>
-  </q-tab-panels>
+        <q-tab-panel name="data-table"></q-tab-panel>
+      </q-tab-panels>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

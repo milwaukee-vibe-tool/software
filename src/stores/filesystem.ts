@@ -8,6 +8,7 @@ export const useFileSystemStore = defineStore("filesystem", () => {
   const logs = ref(new Map<number, Log>());
 
   function loadLog(index: number) {
+    if (index >= files.value.length) throw new Error("File not found");
     if (logs.value.has(index)) return;
 
     const fileReader = new FileReader();

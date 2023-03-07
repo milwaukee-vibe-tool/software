@@ -5,12 +5,13 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useFileSystemStore } from "../stores/filesystem";
 import LogDisplay from "../components/log/LogDisplay.vue";
 import { Log } from "../drivers/log/log";
 
 const fileSystemStore = useFileSystemStore();
+const router = useRouter();
 const route = useRoute();
 
 const loading = ref(false);
@@ -23,7 +24,10 @@ function log(): Log {
     (file) => file.name.split(".")[0] === name
   );
   // todo: avoid this, add index to query?
-  if (index === -1) throw new Error("Log not found");
+  if (index === -1) {
+    router.push({ name: "error404" });
+    return { name: "", content: { points: [], sampleRate: 0 } };
+  }
 
   fileSystemStore.loadLog(index);
 
