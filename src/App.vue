@@ -3,7 +3,15 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="drawer.toggle" />
-        <q-toolbar-title>Milwaukee Vibe Tool</q-toolbar-title>
+        <q-toolbar-title>
+          <q-icon
+            dense
+            name="svguse:milwaukee_logo.svg#milwaukee-logo"
+            color="white"
+            size="5rem"
+          />
+          Vibe Monitoring Tool
+        </q-toolbar-title>
         <Connection class="q-mx-md" />
         <q-btn dense flat round icon="settings" to="/settings" />
       </q-toolbar>
