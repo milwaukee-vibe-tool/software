@@ -7,7 +7,14 @@
       @click="$emit('navigate', index)"
     >
       <q-item-section>
-        <q-item-label>{{ log }}</q-item-label>
+        <!-- <q-item-label>{{ log }}</q-item-label> -->
+        <q-field standout dense readonly>
+          <template v-slot:control>
+            <div class="self-center full-width no-outline">
+              {{ log }}
+            </div>
+          </template>
+        </q-field>
       </q-item-section>
       <q-item-section side>
         <div>

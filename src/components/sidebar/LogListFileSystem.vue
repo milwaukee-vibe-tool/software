@@ -1,12 +1,16 @@
 <template>
-  <q-file
-    ref="picker"
-    v-model="filesystemStore.files"
-    multiple
-    append
-    v-show="false"
-  />
-  <q-btn primary @click="picker!.pickFiles()">Open Log Files</q-btn>
+  <div class="column">
+    <q-file
+      ref="picker"
+      v-model="filesystemStore.files"
+      multiple
+      append
+      v-show="false"
+    />
+    <q-btn color="primary" @click="picker!.pickFiles()" class="q-ma-md">
+      Open Log Files
+    </q-btn>
+  </div>
 
   <q-separator spaced />
 

@@ -14,11 +14,11 @@
   <q-separator />
 
   <q-tab-panels v-model="tab" animated keep-alive>
-    <q-tab-panel name="filesystem">
+    <q-tab-panel name="filesystem" class="q-pa-none">
       <log-list-file-system />
     </q-tab-panel>
 
-    <q-tab-panel name="bluetooth">
+    <q-tab-panel name="bluetooth" class="q-pa-none">
       <!-- <log-list-bluetooth /> -->
     </q-tab-panel>
   </q-tab-panels>
