@@ -2,7 +2,7 @@
   <q-layout view="hHh lpr fFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="drawer.toggle" />
+        <q-btn dense flat round icon="menu" @click="drawerStore.toggle" />
         <q-toolbar-title>
           <q-icon
             dense
@@ -17,7 +17,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer show-if-above v-model="drawer.open" side="left" bordered>
+    <q-drawer show-if-above v-model="drawerStore.open" side="left" bordered>
       <LogList />
     </q-drawer>
 
@@ -29,19 +29,10 @@
   </q-layout>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Connection from "./components/Connection.vue";
 import LogList from "./components/sidebar/LogList.vue";
 import { useDrawerStore } from "./stores/drawer";
 
-export default {
-  setup() {
-    const drawer = useDrawerStore();
-    return { drawer };
-  },
-  components: {
-    Connection,
-    LogList,
-  },
-};
+const drawerStore = useDrawerStore();
 </script>
