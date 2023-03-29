@@ -3,7 +3,10 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="drawerStore.toggle" />
-        <q-toolbar-title>
+        <q-toolbar-title
+          class="cursor-pointer"
+          @click="$router.push({ path: '/' })"
+        >
           <q-icon
             dense
             name="svguse:milwaukee_logo.svg#milwaukee-logo"
