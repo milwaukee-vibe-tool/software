@@ -63,7 +63,7 @@ export function convertBytesToPayloads(
     }
 
     // Verify length
-    if (length[0] + HEADER_SIZE < bytes.length) {
+    if (length[0] + HEADER_SIZE > bytes.length) {
       break;
     }
     const packet = bytes.slice(0, length[0] + HEADER_SIZE);
