@@ -75,7 +75,7 @@ function options(): ChartOptions<"line"> {
         display: true,
         title: {
           display: true,
-          text: "Vibrations (m/s)",
+          text: "Vibrations (m/s^2)",
         },
       },
     },
