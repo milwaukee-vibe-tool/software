@@ -24,8 +24,8 @@ const router = createRouter({
       component: FileSystemLogView,
     },
     {
-      path: "/bluetooth/log/:logId/:view",
-      name: "bluetooth/log",
+      path: "/bluetooth/:view",
+      name: "bluetooth",
       component: BluetoothLogView,
     },
     {
