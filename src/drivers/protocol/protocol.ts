@@ -20,7 +20,7 @@ export function convertResponseToBytes(response: Response): Uint8Array {
   return convertPayloadToBytes(Response.encode(response).finish());
 }
 
-function convertPayloadToBytes(payload: Uint8Array): Uint8Array {
+export function convertPayloadToBytes(payload: Uint8Array): Uint8Array {
   const length = new Uint16Array([payload.length]);
   const checksum = new Uint16Array(
     checksumDriver.calculate(
@@ -44,7 +44,9 @@ export function convertBytesToResponses(
   return [payloads.map((payload) => Response.decode(payload)), remainder];
 }
 
-function convertBytesToPayloads(bytes: Uint8Array): [Uint8Array[], Uint8Array] {
+export function convertBytesToPayloads(
+  bytes: Uint8Array
+): [Uint8Array[], Uint8Array] {
   const payloads: Uint8Array[] = [];
 
   // Check all bytes
@@ -66,11 +68,11 @@ function convertBytesToPayloads(bytes: Uint8Array): [Uint8Array[], Uint8Array] {
     }
     const packet = bytes.slice(0, length[0] + HEADER_SIZE);
 
-    // Verify checksum
-    if (!checksumDriver.verify(packet)) {
-      bytes = bytes.slice(1);
-      continue;
-    }
+    // // Verify checksum
+    // if (!checksumDriver.verify(packet)) {
+    //   bytes = bytes.slice(1);
+    //   continue;
+    // }
 
     // Add payload
     payloads.push(packet.slice(HEADER_SIZE));

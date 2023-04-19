@@ -15,7 +15,6 @@
           />
           Vibe Monitoring Tool
         </q-toolbar-title>
-        <Connection class="q-mx-md" />
         <q-btn dense flat round icon="settings" to="/settings" />
       </q-toolbar>
     </q-header>

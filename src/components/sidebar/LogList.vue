@@ -19,7 +19,7 @@
     </q-tab-panel>
 
     <q-tab-panel name="bluetooth" class="q-pa-none">
-      <!-- <log-list-bluetooth /> -->
+      <log-list-bluetooth />
     </q-tab-panel>
   </q-tab-panels>
 </template>
