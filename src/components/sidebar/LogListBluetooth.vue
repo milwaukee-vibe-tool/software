@@ -12,13 +12,14 @@
 
   <q-separator spaced />
 
-  <div>
-    <q-btn color="primary" class="q-ma-md" @click="toggleLed">Toggle LED</q-btn>
-    <q-toggle v-model="stream" label="Stream data"></q-toggle>
-    <q-btn color="primary" class="q-ma-md">Download</q-btn>
+  <div class="column">
+    <q-toggle v-model="stream" label="Stream"></q-toggle>
+    <q-btn color="primary" class="q-ma-md" @click="navigate"> View Data </q-btn>
     <q-btn color="primary" class="q-ma-md" @click="bluetoothStore.clear()">
       Clear
     </q-btn>
+    <q-btn color="primary" class="q-ma-md">Download</q-btn>
+    <q-btn color="primary" class="q-ma-md" @click="toggleLed">Toggle LED</q-btn>
   </div>
 </template>
 
@@ -26,9 +27,13 @@
 import { ref, watch } from "vue";
 import { ConnectionStatus, useConnectionStore } from "../../stores/connection";
 import { useBluetoothStore } from "../../stores/bluetooth";
+import { useRoute, useRouter } from "vue-router";
 
 const connectionStore = useConnectionStore();
 const bluetoothStore = useBluetoothStore();
+
+const router = useRouter();
+const route = useRoute();
 
 const stream = ref(false);
 let streamInterval: ReturnType<typeof setInterval> | null = null;
@@ -80,5 +85,14 @@ function connectionAction() {
 
 async function toggleLed() {
   connectionStore.sendBytes(new Uint8Array([3]));
+}
+
+function navigate() {
+  router.push({
+    name: "bluetooth",
+    params: {
+      view: route.params.view || "line-graph",
+    },
+  });
 }
 </script>
